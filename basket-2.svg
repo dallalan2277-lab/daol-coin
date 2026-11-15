@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="90mm" height="50mm" viewBox="0 0 90 50" role="img" aria-labelledby="basket-2-title basket-2-desc">
   <title id="basket-2-title">다올 마켓 2코인 교환권 · 장바구니</title>
-  <desc id="basket-2-desc">파랑색과 직접 그린 장바구니 그림이 있는 가로형 교환권입니다. 일련번호를 쓸 줄과 지름 15mm의 교사 도장 원이 있습니다.</desc>
+  <desc id="basket-2-desc">파랑색과 직접 그린 장바구니 그림이 있는 가로형 교환권입니다. 일련번호를 쓸 줄과 지름 15mm의 확인 도장 원이 있습니다.</desc>
   <defs><pattern id="basket-2-pattern" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M-1 2L2 -1 M0 4L4 0 M2 5L5 2" fill="none" stroke="#245FA2" stroke-width=".27"/></pattern></defs>
   <rect width="90" height="50" fill="#FFFFFF"/>
   <rect x=".5" y=".5" width="89" height="49" rx="2.5" fill="#FFFEF9" stroke="#245FA2" stroke-width=".4"/>
@@ -16,7 +16,7 @@
     <text x="5.2" y="44" font-size="2.65" font-weight="700" fill="#183F71">No.</text>
     <path d="M11.5 44.5H31.8" stroke="#183F71" stroke-width=".35"/>
     <text x="5.1" y="48" font-size="1.25" font-weight="700" letter-spacing=".06" fill="#245FA2">DAOL MARKET · DAOL MARKET · DAOL MARKET</text>
-    <text x="77.5" y="18.8" text-anchor="middle" font-size="2.3" font-weight="700" fill="#FFFFFF">교사 도장</text>
+    <text x="77.5" y="18.8" text-anchor="middle" font-size="2.3" font-weight="700" fill="#FFFFFF">확인 도장</text>
     <circle cx="77.5" cy="29.2" r="7.5" fill="#FFFFFF" stroke="#183F71" stroke-width=".4"/>
     <text x="77.5" y="42.2" text-anchor="middle" font-size="1.7" font-weight="700" letter-spacing=".13" fill="#FFFFFF">MARKET PASS</text>
   </g>

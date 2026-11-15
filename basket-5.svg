@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="90mm" height="50mm" viewBox="0 0 90 50" role="img" aria-labelledby="basket-5-title basket-5-desc">
+  <title id="basket-5-title">다올 마켓 5코인 교환권 · 장바구니</title>
+  <desc id="basket-5-desc">주황색과 직접 그린 장바구니 그림이 있는 가로형 교환권입니다. 일련번호를 쓸 줄과 지름 15mm의 교사 도장 원이 있습니다.</desc>
+  <defs><pattern id="basket-5-pattern" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M1 0L2 1 1 2 0 1Z" fill="none" stroke="#B94C35" stroke-width=".27"/></pattern></defs>
+  <rect width="90" height="50" fill="#FFFFFF"/>
+  <rect x=".5" y=".5" width="89" height="49" rx="2.5" fill="#FFFEF9" stroke="#B94C35" stroke-width=".4"/>
+  <rect x="1" y="1" width="64.8" height="48" rx="2" fill="url(#basket-5-pattern)" opacity=".13"/>
+  <rect x="65.8" y=".8" width="23.4" height="48.4" rx="2.1" fill="#B94C35"/>
+  <path d="M68.2 6.1H86.8 M68.2 45.2H86.8" stroke="#FFFFFF" stroke-width=".3" opacity=".7"/>
+  <g font-family="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">
+    <text x="5" y="10.2" font-size="4.8" font-weight="800" fill="#833B2B">다올 마켓</text>
+    <text x="5.1" y="14.3" font-size="1.85" font-weight="700" letter-spacing=".10" fill="#B94C35">작은 선택, 큰 즐거움</text>
+    <text x="4.6" y="35.8" font-size="22" font-weight="800" fill="#833B2B">5</text>
+    <text x="20.3" y="34" font-size="4.1" font-weight="700" fill="#B94C35">코인</text>
+    <text x="5.2" y="44" font-size="2.65" font-weight="700" fill="#833B2B">No.</text>
+    <path d="M11.5 44.5H31.8" stroke="#833B2B" stroke-width=".35"/>
+    <text x="5.1" y="48" font-size="1.25" font-weight="700" letter-spacing=".06" fill="#B94C35">DAOL MARKET · DAOL MARKET · DAOL MARKET</text>
+    <text x="77.5" y="18.8" text-anchor="middle" font-size="2.3" font-weight="700" fill="#FFFFFF">교사 도장</text>
+    <circle cx="77.5" cy="29.2" r="7.5" fill="#FFFFFF" stroke="#833B2B" stroke-width=".4"/>
+    <text x="77.5" y="42.2" text-anchor="middle" font-size="1.7" font-weight="700" letter-spacing=".13" fill="#FFFFFF">MARKET PASS</text>
+  </g>
+  <g stroke="#833B2B" stroke-width=".65" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42.3 23.9C42.2 18.6 45.4 15.6 49.9 15.6S57.5 18.6 57.4 23.9" fill="none"/>
+    <path d="M38.3 23.8Q49.9 21.5 61.5 23.8L59.5 33.7Q49.9 36.9 40.3 33.7Z" fill="#FFD4B5"/>
+    <path d="M38.3 23.8Q49.9 26.2 61.5 23.8" fill="none"/>
+    <circle cx="46.4" cy="29.2" r=".55" fill="#833B2B" stroke="none"/>
+    <circle cx="53.5" cy="29.2" r=".55" fill="#833B2B" stroke="none"/>
+    <path d="M48.2 31Q49.9 32.6 51.6 31" fill="none"/>
+    <path d="M36 17.7V20.3M34.7 19H37.3 M62.3 14.2V16.8M61 15.5H63.6" fill="none" stroke="#B94C35"/>
+  </g>
+</svg>

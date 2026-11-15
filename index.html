@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>다올코인 번호 인쇄</title>
+  <style>
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body { background: #e9efec; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; color: #173b30; }
+    .guide { width: 210mm; max-width: 100%; margin: 0 auto; padding: 5mm 4mm; font-size: 11pt; line-height: 1.6; }
+    .guide h1 { font-size: 15pt; margin: 0 0 2mm; }
+    .guide .row { display: flex; flex-wrap: wrap; gap: 3mm 6mm; align-items: center; margin: 3mm 0; }
+    .guide label { white-space: nowrap; }
+    .guide input { width: 6em; font: inherit; padding: 1mm 2mm; }
+    .guide button { font: inherit; padding: 1.5mm 5mm; cursor: pointer; }
+    .guide table { border-collapse: collapse; margin: 2mm 0; background: #fff; }
+    .guide th, .guide td { border: 1px solid #9fb5ab; padding: 1mm 3mm; text-align: center; }
+    .guide .warn { color: #a3361f; font-weight: 700; }
+    .sheet { position: relative; width: 210mm; height: 297mm; margin: 0 auto 8mm; overflow: hidden; background: white; box-shadow: 0 1mm 5mm #0002; }
+    .label { position: absolute; left: 15mm; top: 11mm; font-size: 8pt; color: #777; }
+    .grid { position: absolute; left: 15mm; top: 23.5mm; display: grid; grid-template-columns: repeat(2, 90mm); grid-template-rows: repeat(5, 50mm); }
+    .grid > svg { display: block; width: 90mm; height: 50mm; }
+    .cuts { position: absolute; left: 12mm; top: 20.5mm; display: block; width: 186mm; height: 256mm; pointer-events: none; }
+    @media print {
+      html, body { width: 210mm; margin: 0; background: white; }
+      .guide { display: none; }
+      .sheet { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+      .sheet:last-of-type { break-after: auto; page-break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="guide">
+    <h1>다올코인 번호 인쇄 (장바구니형)</h1>
+    <div>번호는 1코인 → 2코인 → 5코인 순서로 이어서 매겨집니다. 권종이 바뀌면 새 쪽에서 시작합니다.</div>
+    <div class="row">
+      <label>1코인 <input id="n1" type="number" min="0" value="430">장</label>
+      <label>2코인 <input id="n2" type="number" min="0" value="180">장</label>
+      <label>5코인 <input id="n5" type="number" min="0" value="190">장</label>
+      <label>시작 번호 <input id="start" type="number" min="1" value="1"></label>
+      <button id="make" type="button">다시 만들기</button>
+      <button id="print" type="button">인쇄</button>
+    </div>
+    <div id="summary"></div>
+    <div>인쇄 설정: <b>A4 세로 · 배율 100%(실제 크기) · 여백 없음 · 머리글·바닥글 끄기</b>. 순서: 인쇄 → 학생회 도장 → A4째 코팅 → 자르기.</div>
+  </div>
+  <div id="sheets"></div>
+
+<script>
+(function () {
+  var KINDS = [
+    { v: 1, name: '초록', main: '#147457', dark: '#174A3A', fill: '#C6EBCD',
+      pat: '<circle cx="1" cy="1" r=".32" fill="#147457"/>' },
+    { v: 2, name: '파랑', main: '#245FA2', dark: '#183F71', fill: '#C7E2FA',
+      pat: '<path d="M-1 2L2 -1 M0 4L4 0 M2 5L5 2" fill="none" stroke="#245FA2" stroke-width=".27"/>' },
+    { v: 5, name: '주황', main: '#B94C35', dark: '#833B2B', fill: '#FFD4B5',
+      pat: '<path d="M1 0L2 1 1 2 0 1Z" fill="none" stroke="#B94C35" stroke-width=".27"/>' }
+  ];
+  var CUTS = '<svg class="cuts" viewBox="0 0 186 256" aria-hidden="true">' +
+    '<path d="M3 0V256 M93 0V256 M183 0V256 M0 3H186 M0 53H186 M0 103H186 M0 153H186 M0 203H186 M0 253H186" fill="none" stroke="#fff" stroke-width=".45"/>' +
+    '<path d="M3 0V256 M93 0V256 M183 0V256 M0 3H186 M0 53H186 M0 103H186 M0 153H186 M0 203H186 M0 253H186" fill="none" stroke="#333" stroke-width=".18" stroke-dasharray="1.2 1"/>' +
+    '</svg>';
+  var PER_PAGE = 10;
+
+  function pad(n) {
+    var s = String(n);
+    while (s.length < 3) { s = '0' + s; }
+    return s;
+  }
+
+  function coin(k, no) {
+    var id = 'c' + no;
+    var m = k.main, d = k.dark;
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="90mm" height="50mm" viewBox="0 0 90 50" role="img" aria-labelledby="' + id + '-t">' +
+      '<title id="' + id + '-t">다올 마켓 ' + k.v + '코인 No. ' + pad(no) + '</title>' +
+      '<defs><pattern id="' + id + '-p" width="4" height="4" patternUnits="userSpaceOnUse">' + k.pat + '</pattern></defs>' +
+      '<rect width="90" height="50" fill="#FFFFFF"/>' +
+      '<rect x=".5" y=".5" width="89" height="49" rx="2.5" fill="#FFFEF9" stroke="' + m + '" stroke-width=".4"/>' +
+      '<rect x="1" y="1" width="64.8" height="48" rx="2" fill="url(#' + id + '-p)" opacity=".13"/>' +
+      '<rect x="65.8" y=".8" width="23.4" height="48.4" rx="2.1" fill="' + m + '"/>' +
+      '<path d="M68.2 6.1H86.8 M68.2 45.2H86.8" stroke="#FFFFFF" stroke-width=".3" opacity=".7"/>' +
+      '<g font-family="\'Malgun Gothic\', \'Apple SD Gothic Neo\', sans-serif">' +
+        '<text x="5" y="10.2" font-size="4.8" font-weight="800" fill="' + d + '">다올 마켓</text>' +
+        '<text x="5.1" y="14.3" font-size="1.85" font-weight="700" letter-spacing=".10" fill="' + m + '">작은 선택, 큰 즐거움</text>' +
+        '<text x="4.6" y="35.8" font-size="22" font-weight="800" fill="' + d + '">' + k.v + '</text>' +
+        '<text x="20.3" y="34" font-size="4.1" font-weight="700" fill="' + m + '">코인</text>' +
+        '<text x="5.2" y="44" font-size="2.65" font-weight="700" fill="' + d + '">No.</text>' +
+        '<path d="M11.5 44.5H31.8" stroke="' + d + '" stroke-width=".35"/>' +
+        '<text x="13" y="43.9" font-size="3.1" font-weight="800" letter-spacing=".35" fill="' + d + '">' + pad(no) + '</text>' +
+        '<text x="5.1" y="48" font-size="1.25" font-weight="700" letter-spacing=".06" fill="' + m + '">DAOL MARKET · DAOL MARKET · DAOL MARKET</text>' +
+        '<text x="77.5" y="18.8" text-anchor="middle" font-size="2.3" font-weight="700" fill="#FFFFFF">교사 도장</text>' +
+        '<circle cx="77.5" cy="29.2" r="7.5" fill="#FFFFFF" stroke="' + d + '" stroke-width=".4"/>' +
+        '<text x="77.5" y="42.2" text-anchor="middle" font-size="1.7" font-weight="700" letter-spacing=".13" fill="#FFFFFF">MARKET PASS</text>' +
+      '</g>' +
+      '<g stroke="' + d + '" stroke-width=".65" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M42.3 23.9C42.2 18.6 45.4 15.6 49.9 15.6S57.5 18.6 57.4 23.9" fill="none"/>' +
+        '<path d="M38.3 23.8Q49.9 21.5 61.5 23.8L59.5 33.7Q49.9 36.9 40.3 33.7Z" fill="' + k.fill + '"/>' +
+        '<path d="M38.3 23.8Q49.9 26.2 61.5 23.8" fill="none"/>' +
+        '<circle cx="46.4" cy="29.2" r=".55" fill="' + d + '" stroke="none"/>' +
+        '<circle cx="53.5" cy="29.2" r=".55" fill="' + d + '" stroke="none"/>' +
+        '<path d="M48.2 31Q49.9 32.6 51.6 31" fill="none"/>' +
+        '<path d="M36 17.7V20.3M34.7 19H37.3 M62.3 14.2V16.8M61 15.5H63.6" fill="none" stroke="' + m + '"/>' +
+      '</g>' +
+    '</svg>';
+  }
+
+  function num(id, min) {
+    var v = parseInt(document.getElementById(id).value, 10);
+    if (isNaN(v) || v < min) { v = min; }
+    return v;
+  }
+
+  function build() {
+    var counts = [num('n1', 0), num('n2', 0), num('n5', 0)];
+    var no = num('start', 1);
+    var html = [], rows = [], totalPages = 0, totalCoins = 0, i, j, p;
+    var plan = [];
+    for (i = 0; i < KINDS.length; i++) {
+      var pages = Math.ceil(counts[i] / PER_PAGE);
+      plan.push({ k: KINDS[i], count: counts[i], first: no, last: no + counts[i] - 1, pages: pages });
+      no += counts[i];
+      totalPages += pages;
+      totalCoins += counts[i];
+    }
+    var page = 0;
+    for (i = 0; i < plan.length; i++) {
+      var it = plan[i];
+      if (!it.count) { continue; }
+      rows.push('<tr><td>' + it.k.v + '코인 (' + it.k.name + ')</td><td>' + it.count + '장</td><td>' +
+        pad(it.first) + ' ~ ' + pad(it.last) + '</td><td>' + it.pages + '쪽 (' + (page + 1) + '~' + (page + it.pages) + '쪽)</td></tr>');
+      for (p = 0; p < it.pages; p++) {
+        page++;
+        var a = it.first + p * PER_PAGE;
+        var b = Math.min(a + PER_PAGE - 1, it.last);
+        var cells = [];
+        for (j = a; j <= b; j++) { cells.push(coin(it.k, j)); }
+        html.push('<section class="sheet" aria-label="' + it.k.v + '코인 ' + pad(a) + '~' + pad(b) + '">' +
+          '<div class="label">다올코인 ' + it.k.v + '코인 · No. ' + pad(a) + '~' + pad(b) + ' · ' + page + ' / ' + totalPages + '쪽</div>' +
+          '<div class="grid">' + cells.join('') + '</div>' + CUTS + '</section>');
+      }
+    }
+    var lastNo = no - 1;
+    document.getElementById('sheets').innerHTML = html.join('');
+    document.getElementById('summary').innerHTML =
+      '<table><tr><th>권종</th><th>장수</th><th>번호</th><th>쪽수</th></tr>' + rows.join('') +
+      '<tr><th>합계</th><th>' + totalCoins + '장</th><th>' + (totalCoins ? pad(num('start', 1)) + ' ~ ' + pad(lastNo) : '-') +
+      '</th><th>' + totalPages + '쪽</th></tr></table>' +
+      (lastNo > 999 ? '<div class="warn">번호가 999를 넘어 네 자리로 찍힙니다.</div>' : '');
+  }
+
+  document.getElementById('make').onclick = build;
+  document.getElementById('print').onclick = function () { window.print(); };
+  build();
+})();
+</script>
+</body>
+</html>
